@@ -1,0 +1,13 @@
+### GET request to example server
+GET http://localhost:8080/test
+
+###
+
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jullya",
+  "email": "juju@gmail.com",
+  "password": "chocolateDAjuju"
+}
