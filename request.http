@@ -1,5 +1,5 @@
 ### GET request to example server
-GET http://localhost:8080/test
+GET http://localhost:8080/home
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInN1YiI6Imp1anVAZ21haWwuY29tIiwiZXhwIjoxNzY5MzA4ODUwLCJpYXQiOjE3NjkyMjI0NTB9.sDatLM2B28WvN3rNdkGVb6NRVX1F1zSvpjkQ1HCDgc4
 
 ###
@@ -25,6 +25,3 @@ Content-Type: application/json
 
 
 ###
-
-GET http://localhost:8080/auth/home
-
