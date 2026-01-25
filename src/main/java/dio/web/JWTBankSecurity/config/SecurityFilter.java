@@ -40,7 +40,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         }
         else{
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response); // Rotas públicas continuam funcionando
         }
     }
 }

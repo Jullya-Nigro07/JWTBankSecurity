@@ -1,6 +1,6 @@
 ### GET request to example server
 GET http://localhost:8080/test
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInN1YiI6Imp1anVAZ21haWwuY29tIiwiZXhwIjoxNzY5Mjg5MjExLCJpYXQiOjE3NjkyMDI4MTF9.SR0b4r4eWNJWSOAjRephh41wdbSeuX8nXstE9sVAqoU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInN1YiI6Imp1anVAZ21haWwuY29tIiwiZXhwIjoxNzY5MzA4ODUwLCJpYXQiOjE3NjkyMjI0NTB9.sDatLM2B28WvN3rNdkGVb6NRVX1F1zSvpjkQ1HCDgc4
 
 ###
 
@@ -8,9 +8,9 @@ POST http://localhost:8080/auth/register
 Content-Type: application/json
 
 {
-  "name": "Jullya",
-  "email": "juju@gmail.com",
-  "password": "chocolateDAjuju"
+  "name": "Fernando",
+  "email": "fefe@gmail.com",
+  "password": "fefe12345678"
 }
 
 ###
@@ -22,3 +22,9 @@ Content-Type: application/json
   "email": "juju@gmail.com",
   "password": "chocolateDAjuju"
 }
+
+
+###
+
+GET http://localhost:8080/auth/home
+
