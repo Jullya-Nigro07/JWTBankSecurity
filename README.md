@@ -20,7 +20,7 @@ Este projeto foi desenvolvido para aprender e aplicar conceitos de segurança ap
 
 ### 🧠 Sobre o projeto
 
-JWT (JSON Web Token) é um padrão utilizado para autenticação stateless em aplicações web.*
+JWT (JSON Web Token) é um padrão utilizado para autenticação stateless em aplicações web.
 Este projeto exemplifica como criar e validar tokens JWT em um backend Spring Boot, incluindo um filtro de segurança que intercepta requisições e autentica o usuário com base no token
 
 ⚙️ Dependencias usadas ( https://start.spring.io/ ): 
