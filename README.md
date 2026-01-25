@@ -41,43 +41,6 @@ Este projeto exemplifica como criar e validar tokens JWT em um backend Spring Bo
 
 ---
 
-### 📁 Estrutura do projeto
-
-        src/
-        └── main/
-           └── java/
-             └── dio.web.JWTBankSecurity/
-                ├── config/ 
-                │     ├── AuthConfig.java
-                │     ├── JWTUserData.java
-                │     ├── SecurityConfig.java
-                │     ├── SecurityFilter.java
-                │     └── TokenConfig.java
-                │
-                ├── controller/
-                │     ├── AuthController.java 
-                │     └── HomeController.java
-                │
-                ├── dto/
-                │      ├── request/
-                │           ├── LoginRequest.java
-                │           └── RegisterUserRequest.java
-                │      └── response/
-                │           ├── LoginResponse.java
-                │           └── RegisterUserRequest.java
-                │
-                ├── entity/
-                │      └──  User.java
-                │
-                ├── repositoty/
-                │      └── UserRepository.java
-                │            
-                └── JWTBankSecurityApplication.java
-           └── resources/
-                ├── db.migracion/     
-                       └── V1__create_table_user.sql
----
-
 ### 🚀 Funcionalidades
 
 🔑 Geração de Token (JWT)
@@ -101,7 +64,7 @@ A classe SecurityFilter estende OncePerRequestFilter para:
 ✔ Continuar o fluxo da requisição para o controller
 
 
-### Como executar e testar
+### ✅Como executar e testar
 
 1. **Clone o repositório:**
 
@@ -145,7 +108,43 @@ A classe SecurityFilter estende OncePerRequestFilter para:
 
 6. **Teste as rotas no Postman, Insomnia ou via HTTP.Request do Intelliji**
 
-    ```JWTBankSecurity
-    🌐request.http
-    ```
-   
+JWTBankSecurity --> 🌐request.http
+
+---
+
+### 📁 Estrutura do projeto
+
+        src/
+        └── main/
+           └── java/
+             └── dio.web.JWTBankSecurity/
+                ├── config/ 
+                │     ├── AuthConfig.java
+                │     ├── JWTUserData.java
+                │     ├── SecurityConfig.java
+                │     ├── SecurityFilter.java
+                │     └── TokenConfig.java
+                │
+                ├── controller/
+                │     ├── AuthController.java 
+                │     └── HomeController.java
+                │
+                ├── dto/
+                │      ├── request/
+                │           ├── LoginRequest.java
+                │           └── RegisterUserRequest.java
+                │      └── response/
+                │           ├── LoginResponse.java
+                │           └── RegisterUserRequest.java
+                │
+                ├── entity/
+                │      └──  User.java
+                │
+                ├── repositoty/
+                │      └── UserRepository.java
+                │            
+                └── JWTBankSecurityApplication.java
+           └── resources/
+                ├── db.migracion/     
+                       └── V1__create_table_user.sql
+---
