@@ -1,5 +1,6 @@
 # 🪪 JWTBankSecurity
 JWTBankSecurity é uma API REST em Java com Spring Boot que demonstra a implementação de autenticação usando JSON Web Tokens (JWT)
+
 ![Status](https://img.shields.io/badge/Status-Concluído-blue)
 
 Este projeto foi desenvolvido para aprender e aplicar conceitos de segurança aplicados a APIs, incluindo:
