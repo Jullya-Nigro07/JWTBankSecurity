@@ -35,6 +35,8 @@ public class SecurityFilter extends OncePerRequestFilter {
 
                 JWTUserData userData = optUser.get();
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userData, null, null);
+
+                //Esse objeto representa o usuario que está autenticado pelo token
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
             filterChain.doFilter(request, response);
