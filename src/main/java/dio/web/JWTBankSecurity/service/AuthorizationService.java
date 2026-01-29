@@ -38,4 +38,25 @@ public class AuthorizationService {
 
         return userFromToken.getId().equals(id);
     }
+
+    public User getAuthenticatedUser() {
+
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new RuntimeException("Usuário não autenticado");
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof JWTUserData jwtUserData)) {
+            throw new RuntimeException("Token inválido");
+        }
+
+        return (User) userRepository.findUserByEmail(jwtUserData.email())
+                .orElseThrow(() ->
+                        new RuntimeException("Usuário não encontrado")
+                );
+    }
 }

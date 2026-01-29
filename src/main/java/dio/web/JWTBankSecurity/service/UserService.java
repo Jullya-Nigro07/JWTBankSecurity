@@ -6,7 +6,11 @@ import dio.web.JWTBankSecurity.dto.request.RegisterUserRequest;
 import dio.web.JWTBankSecurity.dto.request.UpdateUserRequest;
 import dio.web.JWTBankSecurity.dto.response.LoginResponse;
 import dio.web.JWTBankSecurity.dto.response.UserResponse;
+import dio.web.JWTBankSecurity.entity.Account;
+import dio.web.JWTBankSecurity.entity.Transaction;
 import dio.web.JWTBankSecurity.entity.User;
+import dio.web.JWTBankSecurity.repository.AccountRepository;
+import dio.web.JWTBankSecurity.repository.TransactionRepository;
 import dio.web.JWTBankSecurity.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -24,6 +28,7 @@ import java.util.NoSuchElementException;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final AuthenticationManager authenticationManager;
     private final TokenConfig tokenConfig;
     private final PasswordEncoder passwordEncoder;
@@ -34,13 +39,15 @@ public class UserService {
             UserRepository userRepository,
             AuthenticationManager authenticationManager,
             TokenConfig tokenConfig,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            AccountRepository accountRepository
     ) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.tokenConfig = tokenConfig;
         this.passwordEncoder = passwordEncoder;
         this.authorizationService = authorizationService;
+        this.accountRepository = accountRepository;
     }
 
     public ResponseEntity<LoginResponse> login(LoginRequest request) {
@@ -66,7 +73,6 @@ public class UserService {
             return ResponseEntity.ok(new LoginResponse(token));
 
         } catch (BadCredentialsException ex) {
-            // cai no GlobalExceptionHandler → 401 ou 400
             throw new RuntimeException("Email ou senha inválidos");
         }
     }
@@ -82,7 +88,11 @@ public class UserService {
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
 
+        Account account = new Account();
+        account.setUser(user);
+
         userRepository.save(user);
+        accountRepository.save(account);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new UserResponse(user.getName(), user.getEmail()));
