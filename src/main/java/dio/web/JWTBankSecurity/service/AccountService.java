@@ -5,6 +5,7 @@ import dio.web.JWTBankSecurity.dto.response.AccountResponse;
 import dio.web.JWTBankSecurity.entity.Account;
 import dio.web.JWTBankSecurity.entity.Transaction;
 import dio.web.JWTBankSecurity.entity.User;
+import dio.web.JWTBankSecurity.exception.BalanceInsufficientException;
 import dio.web.JWTBankSecurity.repository.AccountRepository;
 import dio.web.JWTBankSecurity.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
@@ -30,17 +31,13 @@ public class AccountService {
 
         Account account = user.getAccount();
 
-        BigDecimal value = request.value();
+        BigDecimal amount = request.amount();
 
-        if (value.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RuntimeException("Valor inválido! Precisa ser maior que zero");
-        }
-
-        account.setBalance(account.getBalance().add(value));
+        account.setBalance(account.getBalance().add(amount));
 
         Transaction transaction = new Transaction();
         transaction.setType("DEPOSIT");
-        transaction.setAmount(value);
+        transaction.setAmount(amount);
         transaction.setAccount(account);
 
         transactionRepository.save(transaction);
@@ -55,23 +52,19 @@ public class AccountService {
 
         Account account = user.getAccount();
 
-        BigDecimal value = request.value();;
+        BigDecimal amount = request.amount();;
         BigDecimal balance = account.getBalance();
 
-        if (value.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RuntimeException("Valor inválido! Precisa ser maior que 0");
-        }
-
-        if (balance.compareTo(value) < 0) {
-            throw  new RuntimeException("Saldo insuficiente!");
+        if (balance.compareTo(amount) < 0) {
+            throw new BalanceInsufficientException("Your balance is insufficient. Check your balance");
         }
 
         Transaction transaction = new Transaction();
         transaction.setType("WITHDRAW");
-        transaction.setAmount(value);
+        transaction.setAmount(amount);
         transaction.setAccount(account);
 
-        account.setBalance(account.getBalance().subtract(value));
+        account.setBalance(account.getBalance().subtract(amount));
 
         accountRepository.save(account);
         transactionRepository.save(transaction);

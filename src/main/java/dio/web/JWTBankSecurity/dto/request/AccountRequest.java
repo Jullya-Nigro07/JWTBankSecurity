@@ -4,5 +4,5 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-public record AccountRequest (@NotNull @Positive BigDecimal value){
+public record AccountRequest (@NotNull @Positive BigDecimal amount){
 }

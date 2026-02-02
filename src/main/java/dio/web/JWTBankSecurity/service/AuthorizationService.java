@@ -2,6 +2,7 @@ package dio.web.JWTBankSecurity.service;
 
 import dio.web.JWTBankSecurity.config.JWTUserData;
 import dio.web.JWTBankSecurity.entity.User;
+import dio.web.JWTBankSecurity.exception.NotFoundException;
 import dio.web.JWTBankSecurity.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,18 +23,18 @@ public class AuthorizationService {
                 SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Usuário não autenticado");
+            throw new NotFoundException("Unauthenticated user");
         }
 
         Object principal = authentication.getPrincipal();
 
         if (!(principal instanceof JWTUserData jwtUserData)) {
-            throw new RuntimeException("Token inválido ou usuário não autenticado");
+            throw new NotFoundException("Invalid Token");
         }
 
         User userFromToken = (User) userRepository.findUserByEmail(jwtUserData.email())
                 .orElseThrow(() ->
-                        new RuntimeException("Usuário do token não encontrado")
+                        new NotFoundException("User token not found")
                 );
 
         return userFromToken.getId().equals(id);
@@ -45,18 +46,18 @@ public class AuthorizationService {
                 SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new RuntimeException("Usuário não autenticado");
+            throw new NotFoundException("Unauthenticated user");
         }
 
         Object principal = authentication.getPrincipal();
 
         if (!(principal instanceof JWTUserData jwtUserData)) {
-            throw new RuntimeException("Token inválido");
+            throw new NotFoundException("Invalid Token");
         }
 
         return (User) userRepository.findUserByEmail(jwtUserData.email())
                 .orElseThrow(() ->
-                        new RuntimeException("Usuário não encontrado")
+                        new NotFoundException("User not found")
                 );
     }
 }

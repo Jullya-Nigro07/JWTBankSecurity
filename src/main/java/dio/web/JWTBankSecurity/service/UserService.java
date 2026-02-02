@@ -7,12 +7,11 @@ import dio.web.JWTBankSecurity.dto.request.UpdateUserRequest;
 import dio.web.JWTBankSecurity.dto.response.LoginResponse;
 import dio.web.JWTBankSecurity.dto.response.UserResponse;
 import dio.web.JWTBankSecurity.entity.Account;
-import dio.web.JWTBankSecurity.entity.Transaction;
 import dio.web.JWTBankSecurity.entity.User;
+import dio.web.JWTBankSecurity.exception.EmailExistsException;
+import dio.web.JWTBankSecurity.exception.NotFoundException;
 import dio.web.JWTBankSecurity.repository.AccountRepository;
-import dio.web.JWTBankSecurity.repository.TransactionRepository;
 import dio.web.JWTBankSecurity.repository.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,8 +20,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.NoSuchElementException;
 
 @Service
 public class UserService {
@@ -55,9 +52,7 @@ public class UserService {
         try {
             UsernamePasswordAuthenticationToken userAndPass =
                     new UsernamePasswordAuthenticationToken(
-                            request.email(),
-                            request.password()
-                    );
+                            request.email(), request.password());
 
             Authentication authentication =
                     authenticationManager.authenticate(userAndPass);
@@ -65,7 +60,7 @@ public class UserService {
             User user = (User) authentication.getPrincipal();
 
             if (user == null) {
-                throw new RuntimeException("Usuário não autenticado");
+                throw new NotFoundException("Unauthenticated user");
             }
 
             String token = tokenConfig.generateToken(user);
@@ -73,14 +68,14 @@ public class UserService {
             return ResponseEntity.ok(new LoginResponse(token));
 
         } catch (BadCredentialsException ex) {
-            throw new RuntimeException("Email ou senha inválidos");
+            throw new NotFoundException("Invalid email or password");
         }
     }
 
     public ResponseEntity<UserResponse> register(RegisterUserRequest request) {
 
         if (userRepository.findUserByEmail(request.email()).isPresent()) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new EmailExistsException("Email already registered. Please use a different email address!");
         }
 
         User user = new User();
@@ -98,15 +93,15 @@ public class UserService {
                 .body(new UserResponse(user.getName(), user.getEmail()));
     }
 
-    public ResponseEntity<UserResponse> updateUser(Long id, @Valid UpdateUserRequest userRequest) {
+    public ResponseEntity<UserResponse> updateUser(Long id, UpdateUserRequest userRequest) {
 
         if (!authorizationService.testAuthorization(id)) {
-            throw new RuntimeException("Acesso negado");
+            throw new NotFoundException("Access denied");
         }
 
         User existing = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new NoSuchElementException("Usuário não encontrado")
+                        new NotFoundException("User not found")
                 );
 
         if (userRequest.name() != null) {
@@ -129,12 +124,12 @@ public class UserService {
     public ResponseEntity<UserResponse> deleteUser(Long id) {
 
         if (!authorizationService.testAuthorization(id)) {
-            throw new RuntimeException("Acesso negado");
+            throw new NotFoundException("Access denied");
         }
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new NoSuchElementException("Usuário não encontrado")
+                        new NotFoundException("User not found")
                 );
 
         userRepository.delete(user);

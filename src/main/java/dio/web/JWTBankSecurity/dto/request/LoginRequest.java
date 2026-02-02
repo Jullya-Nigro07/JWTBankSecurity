@@ -1,6 +1,7 @@
 package dio.web.JWTBankSecurity.dto.request;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-public record LoginRequest(@NotEmpty(message = "Email é obrigatório") String email, @NotEmpty(message = "Senha é obrigatória") String password) {
+public record LoginRequest(@NotBlank @Email String email, @NotBlank String password) {
 }
