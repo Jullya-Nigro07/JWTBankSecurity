@@ -6,9 +6,12 @@ import dio.web.JWTBankSecurity.dto.request.RegisterUserRequest;
 import dio.web.JWTBankSecurity.dto.request.UpdateUserRequest;
 import dio.web.JWTBankSecurity.dto.response.LoginResponse;
 import dio.web.JWTBankSecurity.dto.response.UserResponse;
+import dio.web.JWTBankSecurity.entity.Account;
 import dio.web.JWTBankSecurity.entity.User;
+import dio.web.JWTBankSecurity.exception.EmailExistsException;
+import dio.web.JWTBankSecurity.exception.NotFoundException;
+import dio.web.JWTBankSecurity.repository.AccountRepository;
 import dio.web.JWTBankSecurity.repository.UserRepository;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,12 +21,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final AuthenticationManager authenticationManager;
     private final TokenConfig tokenConfig;
     private final PasswordEncoder passwordEncoder;
@@ -34,13 +36,15 @@ public class UserService {
             UserRepository userRepository,
             AuthenticationManager authenticationManager,
             TokenConfig tokenConfig,
-            PasswordEncoder passwordEncoder
+            PasswordEncoder passwordEncoder,
+            AccountRepository accountRepository
     ) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.tokenConfig = tokenConfig;
         this.passwordEncoder = passwordEncoder;
         this.authorizationService = authorizationService;
+        this.accountRepository = accountRepository;
     }
 
     public ResponseEntity<LoginResponse> login(LoginRequest request) {
@@ -48,9 +52,7 @@ public class UserService {
         try {
             UsernamePasswordAuthenticationToken userAndPass =
                     new UsernamePasswordAuthenticationToken(
-                            request.email(),
-                            request.password()
-                    );
+                            request.email(), request.password());
 
             Authentication authentication =
                     authenticationManager.authenticate(userAndPass);
@@ -58,7 +60,7 @@ public class UserService {
             User user = (User) authentication.getPrincipal();
 
             if (user == null) {
-                throw new RuntimeException("Usuário não autenticado");
+                throw new NotFoundException("Unauthenticated user");
             }
 
             String token = tokenConfig.generateToken(user);
@@ -66,15 +68,14 @@ public class UserService {
             return ResponseEntity.ok(new LoginResponse(token));
 
         } catch (BadCredentialsException ex) {
-            // cai no GlobalExceptionHandler → 401 ou 400
-            throw new RuntimeException("Email ou senha inválidos");
+            throw new NotFoundException("Invalid email or password");
         }
     }
 
     public ResponseEntity<UserResponse> register(RegisterUserRequest request) {
 
         if (userRepository.findUserByEmail(request.email()).isPresent()) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new EmailExistsException("Email already registered. Please use a different email address!");
         }
 
         User user = new User();
@@ -82,21 +83,25 @@ public class UserService {
         user.setEmail(request.email());
         user.setPassword(passwordEncoder.encode(request.password()));
 
+        Account account = new Account();
+        account.setUser(user);
+
         userRepository.save(user);
+        accountRepository.save(account);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new UserResponse(user.getName(), user.getEmail()));
     }
 
-    public ResponseEntity<UserResponse> updateUser(Long id, @Valid UpdateUserRequest userRequest) {
+    public ResponseEntity<UserResponse> updateUser(Long id, UpdateUserRequest userRequest) {
 
         if (!authorizationService.testAuthorization(id)) {
-            throw new RuntimeException("Acesso negado");
+            throw new NotFoundException("Access denied");
         }
 
         User existing = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new NoSuchElementException("Usuário não encontrado")
+                        new NotFoundException("User not found")
                 );
 
         if (userRequest.name() != null) {
@@ -119,12 +124,12 @@ public class UserService {
     public ResponseEntity<UserResponse> deleteUser(Long id) {
 
         if (!authorizationService.testAuthorization(id)) {
-            throw new RuntimeException("Acesso negado");
+            throw new NotFoundException("Access denied");
         }
 
         User user = userRepository.findById(id)
                 .orElseThrow(() ->
-                        new NoSuchElementException("Usuário não encontrado")
+                        new NotFoundException("User not found")
                 );
 
         userRepository.delete(user);

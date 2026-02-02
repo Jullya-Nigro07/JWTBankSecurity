@@ -1,6 +1,7 @@
 package dio.web.JWTBankSecurity.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,6 +23,9 @@ public class User implements UserDetails {
     private String name;
     private String email;
     private String password;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Account account;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
