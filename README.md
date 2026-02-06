@@ -143,6 +143,9 @@ JWTBankSecurity --> 🌐request.http
                 │     └── UserController.java
                 │
                 ├── dto/
+                │      ├── erro/
+                │           ├── ErroRequest.java
+                │           └── UnauthorizedException.java
                 │      ├── request/
                 │           ├── UpdateUserRequest.java
                 │           ├── AccountRequest.java
