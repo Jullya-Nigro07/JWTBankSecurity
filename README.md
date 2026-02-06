@@ -23,7 +23,39 @@ Este projeto foi desenvolvido para aprender e aplicar conceitos de segurança ap
 JWT (JSON Web Token) é um padrão utilizado para autenticação stateless em aplicações web.
 Este projeto exemplifica como criar e validar tokens JWT em um backend Spring Boot, incluindo um filtro de segurança que intercepta requisições e autentica o usuário com base no token
 
-⚙️ Dependencias usadas ( https://start.spring.io/ ): 
+Funcionalidades:
+- Registrar um usuário já com uma conta
+- Logar um usuário e gerar um token para ele
+- Realizar deposito e saque com o registro da transação
+- Acessar extrato
+
+🔑 Geração de Token (JWT)
+
+O projeto possui uma classe de configuração (TokenConfig) que:
+- Gera um token JWT contendo claims como userId e email
+- Assina o token com uma chave secreta
+- Valida o token
+
+🔒 Filtro de Segurança
+
+A classe SecurityFilter estende OncePerRequestFilter para:
+
+✔ Interceptar todas as requisições HTTP
+
+✔ Extrair o token JWT do header Authorization
+
+✔ Validar o token e autenticar o usuário caso seja válido
+
+✔ Continuar o fluxo da requisição para o controller
+
+⚙️ Configuração do Spring Security
+
+A classe SecurityConfig que é onde configuramos:
+- Definimos como as requisições serão tratadas
+- Quais endpoints são públicos, quais são privados
+- Quais exceções se aplicam
+
+🛠️ Dependencias usadas ( https://start.spring.io/ ): 
 
 - PostgreSQL
 - Spring Data JPA
@@ -43,29 +75,6 @@ Este projeto exemplifica como criar e validar tokens JWT em um backend Spring Bo
 ```
 
 ---
-
-### 🚀 Funcionalidades
-
-🔑 Geração de Token (JWT)
-
-- O projeto possui uma classe de configuração (TokenConfig) que:
-- Gera um token JWT contendo claims como userId e email
-- Assina o token com uma chave secreta
-- Valida o token
-
-🔒 Filtro de Segurança
-
-A classe SecurityFilter estende OncePerRequestFilter para:
-
-
-✔ Interceptar todas as requisições HTTP
-
-✔ Extrair o token JWT do header Authorization
-
-✔ Validar o token e autenticar o usuário caso seja válido
-
-✔ Continuar o fluxo da requisição para o controller
-
 
 ### ✅Como executar e testar
 
@@ -129,25 +138,50 @@ JWTBankSecurity --> 🌐request.http
                 │     └── TokenConfig.java
                 │
                 ├── controller/
-                │     ├── AuthController.java 
-                │     └── HomeController.java
+                │     ├── TransactionController.java
+                │     ├── AccountController.java 
+                │     └── UserController.java
                 │
                 ├── dto/
                 │      ├── request/
+                │           ├── UpdateUserRequest.java
+                │           ├── AccountRequest.java
                 │           ├── LoginRequest.java
                 │           └── RegisterUserRequest.java
                 │      └── response/
+                │           ├── AccountResponse.java
+                │           ├── TransactionResponse.java
                 │           ├── LoginResponse.java
                 │           └── RegisterUserRequest.java
                 │
                 ├── entity/
-                │      └──  User.java
+                │      ├── Account.java
+                │      ├── Transaction.java 
+                │      └── User.java
                 │
                 ├── repositoty/
+                │      ├── AccountRepository.java
+                │      ├── TransactionRepository.java 
                 │      └── UserRepository.java
                 │            
+                ├── exception/
+                │      ├── GlobalExceptionHandler.java
+                │      └── UnauthorizedException.java
+                │
+                ├── service/
+                │      ├── AccountService.java
+                │      ├── AuthorizationService.java
+                │      ├── TransactionService.java
+                │      └── UserService.java
+                │
                 └── JWTBankSecurityApplication.java
            └── resources/
                 ├── db.migracion/     
                        └── V1__create_table_user.sql
 ---
+
+
+### 📉 Diagrama de sequencia (UML) - Login
+
+-Abra o arquivo
+-Faça o download da imagem para melhor visualização
