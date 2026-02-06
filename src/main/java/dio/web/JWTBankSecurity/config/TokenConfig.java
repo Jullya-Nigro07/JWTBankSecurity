@@ -12,9 +12,6 @@ import java.util.Optional;
 @Component
 public class TokenConfig {
 
-    /// chave usada para gerar a assinatura. A secret funciona como uma senha que só o servidor conhece,
-    ///  e é usada para impedir que alguém modifique o header ou o payload do JWT.
-
     private String secret = "secret-chave-de-teste-para-app-jwt-config-jullya";
     Algorithm algorithm = Algorithm.HMAC256(secret);
 
@@ -22,7 +19,7 @@ public class TokenConfig {
 
         return JWT.create()
                 .withClaim("userId", user.getId())
-                .withSubject(user.getEmail()) // define a quem pertence
+                .withSubject(user.getEmail())
                 .withExpiresAt(Instant.now().plusSeconds(86400))
                 .withIssuedAt(Instant.now())
                 .sign(algorithm);
@@ -31,11 +28,7 @@ public class TokenConfig {
     public Optional<JWTUserData> validateToken(String token){
 
         try{
-            /// Qual algorithm o token deve ter, constrói o verificador, verifica e decodifica.
             DecodedJWT decode = JWT.require(algorithm).build().verify(token);
-
-            /// O @Builder no DTO JWTUserData permite a construção explícita dos atributos, para evitar erros e construtores longos.
-            /// .asLong() - as claim são retornadas sem tipo, então definimos o que foi buscado no get é do tipo Long.
             return Optional.of(JWTUserData.builder()
                     .userId(decode.getClaim("userId").asLong())
                     .email(decode.getSubject())

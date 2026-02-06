@@ -48,8 +48,6 @@ public class UserService {
         this.accountRepository = accountRepository;
     }
 
-    /// UsernamePasswordAuthenticationToken - Quero autenticar esse email com essa senha.
-    /// getPrincipal() - Pego o usuário autenticado.
     public ResponseEntity<LoginResponse> login(LoginRequest request) {
 
         try {

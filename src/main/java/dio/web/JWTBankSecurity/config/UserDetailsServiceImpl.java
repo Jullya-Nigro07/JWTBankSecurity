@@ -16,8 +16,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    /// Busca o UserDetails (entity) e retorna o username(email e senha)
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findUserByEmail(username).orElseThrow(() -> new UsernameNotFoundException(username));

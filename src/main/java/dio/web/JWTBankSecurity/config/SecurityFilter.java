@@ -33,11 +33,9 @@ public class SecurityFilter extends OncePerRequestFilter {
 
                 JWTUserData userData = User.get();
 
-                /// Objeto que representa o autenticado para o Spring.
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(userData, null, null);
 
-                /// Salva o autenticado para a requisição atual.
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
             filterChain.doFilter(request, response);
