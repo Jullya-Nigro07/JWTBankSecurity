@@ -1,6 +1,7 @@
 package dio.web.JWTBankSecurity.config;
 
 import dio.web.JWTBankSecurity.repository.UserRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +15,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetailsServiceImpl(UserRepository userRepository){
         this.userRepository = userRepository;
     }
+
+    /// Busca o UserDetails (entity) e retorna o username(email e senha)
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

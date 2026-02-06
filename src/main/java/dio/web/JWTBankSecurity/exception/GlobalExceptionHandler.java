@@ -32,23 +32,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(response);
     }
 
-    @ExceptionHandler(EmailExistsException.class)
-    public ResponseEntity<ErroExistsEmail> handlerEmailExistsException(EmailExistsException ex){
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ErroExistsEmail> handlerUnauthorizedException(UnauthorizedException ex){
         ErroExistsEmail erroExistsEmail = new ErroExistsEmail(ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         return ResponseEntity.badRequest().body(erroExistsEmail);
     }
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErroNotFound> handlerNotFound(NotFoundException ex){
-        ErroNotFound erroNotFound = new ErroNotFound(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
-        return ResponseEntity.badRequest().body(erroNotFound);
-    }
-
-    @ExceptionHandler(BalanceInsufficientException.class)
-    public ResponseEntity<ErroBalanceInsufficient> handlerBalanceInsufficientException(BalanceInsufficientException ex){
-        ErroBalanceInsufficient erroBalanceInsufficient = new ErroBalanceInsufficient(ex.getMessage(), HttpStatus.BAD_REQUEST.value(), LocalDateTime.now());
-        return ResponseEntity.badRequest().body(erroBalanceInsufficient);
-    }
-
 }
 

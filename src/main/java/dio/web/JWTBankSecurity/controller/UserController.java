@@ -30,13 +30,13 @@ public class UserController {
         return userService.register(request);
     }
 
-    @PatchMapping("/updateRegister/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
-        return userService.updateUser(id, request);
+    @PatchMapping("/updateRegister")
+    public ResponseEntity<UserResponse> updateUser(@Valid @RequestBody UpdateUserRequest request) {
+        return userService.updateUser(request);
     }
 
-    @DeleteMapping("/deleteRegister/{id}")
-    public ResponseEntity<UserResponse> deleteUser(@PathVariable Long id) {
-        return userService.deleteUser(id);
+    @DeleteMapping("/deleteRegister")
+    public ResponseEntity<UserResponse> deleteUser() {
+        return userService.deleteUser();
     }
 }

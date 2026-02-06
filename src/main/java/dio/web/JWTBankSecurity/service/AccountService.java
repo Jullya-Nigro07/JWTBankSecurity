@@ -5,7 +5,7 @@ import dio.web.JWTBankSecurity.dto.response.AccountResponse;
 import dio.web.JWTBankSecurity.entity.Account;
 import dio.web.JWTBankSecurity.entity.Transaction;
 import dio.web.JWTBankSecurity.entity.User;
-import dio.web.JWTBankSecurity.exception.BalanceInsufficientException;
+import dio.web.JWTBankSecurity.exception.UnauthorizedException;
 import dio.web.JWTBankSecurity.repository.AccountRepository;
 import dio.web.JWTBankSecurity.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
@@ -27,10 +27,10 @@ public class AccountService {
 
     @Transactional
     public AccountResponse deposit(AccountRequest request) {
+
         User user = authorizationService.getAuthenticatedUser();
 
         Account account = user.getAccount();
-
         BigDecimal amount = request.amount();
 
         account.setBalance(account.getBalance().add(amount));
@@ -48,15 +48,15 @@ public class AccountService {
 
     @Transactional
     public AccountResponse withdraw(AccountRequest request){
+
         User user = authorizationService.getAuthenticatedUser();
 
         Account account = user.getAccount();
-
         BigDecimal amount = request.amount();;
         BigDecimal balance = account.getBalance();
 
         if (balance.compareTo(amount) < 0) {
-            throw new BalanceInsufficientException("Your balance is insufficient. Check your balance");
+            throw new UnauthorizedException("Your balance is insufficient. Check your balance");
         }
 
         Transaction transaction = new Transaction();
