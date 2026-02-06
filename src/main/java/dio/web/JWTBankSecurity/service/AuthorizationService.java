@@ -22,11 +22,12 @@ public class AuthorizationService {
     public User getAuthenticatedUser() {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = Objects.requireNonNull(authentication).getPrincipal();
 
         if (!authentication.isAuthenticated()) {
             throw new UnauthorizedException("Unauthenticated user");
         }
+
+        Object principal = authentication.getPrincipal();
 
         if (!(principal instanceof JWTUserData jwtUserData)) {
             throw new UnauthorizedException("Invalid Token");

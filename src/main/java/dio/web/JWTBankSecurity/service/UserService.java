@@ -61,6 +61,7 @@ public class UserService {
                     authenticationManager.authenticate(userAndPass);
 
             User user = (User) authentication.getPrincipal();
+
             String token = tokenConfig.generateToken(Objects.requireNonNull(user));
             return ResponseEntity.ok(new LoginResponse(token));
 
