@@ -29,6 +29,9 @@ Funcionalidades:
 - Realizar deposito e saque com o registro da transação
 - Acessar extrato
 
+
+![Diagrama](img/diagramaR.png)
+
 🔑 Geração de Token (JWT)
 
 O projeto possui uma classe de configuração (TokenConfig) que:
@@ -186,5 +189,7 @@ JWTBankSecurity --> 🌐request.http
 
 ### 📉 Diagrama de sequencia (UML) - Login
 
--Abra o arquivo
--Faça o download da imagem para melhor visualização
+-Faça o download da imagem que está na pasta "img/" para melhor visualização
+
+![Diagrama de Sequencia](img/diagramaSequencial.png)
+
