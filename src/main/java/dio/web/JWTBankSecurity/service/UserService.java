@@ -20,8 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 public class UserService {
 
@@ -59,8 +57,10 @@ public class UserService {
                     authenticationManager.authenticate(userAndPass);
 
             User user = (User) authentication.getPrincipal();
+            user.incrementTokenVersion();
+            userRepository.save(user);
 
-            String token = tokenConfig.generateToken(Objects.requireNonNull(user));
+            String token = tokenConfig.generateToken(user);
             return ResponseEntity.ok(new LoginResponse(token));
 
         } catch (BadCredentialsException ex) {

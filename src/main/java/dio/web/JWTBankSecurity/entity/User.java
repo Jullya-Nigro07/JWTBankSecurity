@@ -27,6 +27,13 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Account account;
 
+    @Column(name = "token_version", nullable = false)
+    private Integer tokenVersion = 0;
+
+    public void incrementTokenVersion() {
+        this.tokenVersion++;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
