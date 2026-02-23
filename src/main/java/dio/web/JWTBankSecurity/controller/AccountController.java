@@ -1,6 +1,5 @@
 package dio.web.JWTBankSecurity.controller;
 
-
 import dio.web.JWTBankSecurity.dto.request.AccountRequest;
 import dio.web.JWTBankSecurity.dto.response.AccountResponse;
 import dio.web.JWTBankSecurity.service.AccountService;

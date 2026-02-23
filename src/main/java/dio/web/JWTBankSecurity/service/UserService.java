@@ -114,12 +114,7 @@ public class UserService {
     public ResponseEntity<UserResponse> deleteUser() {
 
         User user = authorizationService.getAuthenticatedUser();
-        User userExisting = userRepository.findById(user.getId())
-                .orElseThrow(() ->
-                        new UnauthorizedException("User not found")
-                );
-
-        userRepository.delete(userExisting);
+        userRepository.delete(user);
 
         return ResponseEntity.ok(
                 new UserResponse(user.getName(), user.getEmail())

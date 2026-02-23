@@ -1,7 +1,6 @@
 package dio.web.JWTBankSecurity.config;
 
 import dio.web.JWTBankSecurity.repository.UserRepository;
-import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
