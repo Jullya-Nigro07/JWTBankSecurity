@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
     private final AuthenticationManager authenticationManager;
@@ -31,32 +30,31 @@ public class UserService {
     private final AuthorizationService authorizationService;
 
     public UserService(
-            AuthorizationService authorizationService,
             UserRepository userRepository,
             AuthenticationManager authenticationManager,
             TokenConfig tokenConfig,
             PasswordEncoder passwordEncoder,
-            AccountRepository accountRepository
+            AccountRepository accountRepository,
+            AuthorizationService authorizationService
     ) {
         this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.tokenConfig = tokenConfig;
         this.passwordEncoder = passwordEncoder;
-        this.authorizationService = authorizationService;
         this.accountRepository = accountRepository;
+        this.authorizationService = authorizationService;
     }
 
     public ResponseEntity<LoginResponse> login(LoginRequest request) {
-
         try {
             UsernamePasswordAuthenticationToken userAndPass =
                     new UsernamePasswordAuthenticationToken(
                             request.email(), request.password());
 
-            Authentication authentication =
+            Authentication userAuthentication =
                     authenticationManager.authenticate(userAndPass);
 
-            User user = (User) authentication.getPrincipal();
+            User user = (User) userAuthentication.getPrincipal();
             user.incrementTokenVersion();
             userRepository.save(user);
 
@@ -69,31 +67,26 @@ public class UserService {
     }
 
     public ResponseEntity<UserResponse> register(RegisterUserRequest request) {
-
         if (userRepository.findUserByEmail(request.email()).isPresent()) {
             throw new UnauthorizedException("Email already registered. Please use a different email address!");
         }
 
-        User user = new User();
-        user.setName(request.name());
-        user.setEmail(request.email());
-        user.setPassword(passwordEncoder.encode(request.password()));
+        String name = request.name();
+        String email = request.email();
+        String password = passwordEncoder.encode(request.password());
 
-        Account account = new Account();
-        account.setUser(user);
+        User user = new User(name, email, password);
+        Account account = new Account(user);
 
         userRepository.save(user);
         accountRepository.save(account);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new UserResponse(user.getName(), user.getEmail()));
+                .body(new UserResponse(name, email));
     }
 
-
     public ResponseEntity<UserResponse> updateUser(UpdateUserRequest userRequest) {
-
         User user = authorizationService.getAuthenticatedUser();
-
         if (userRequest.name() != null) {
             user.setName(userRequest.name());
         }
@@ -105,19 +98,14 @@ public class UserService {
         }
 
         userRepository.save(user);
-
         return ResponseEntity.ok(
-                new UserResponse(user.getName(), user.getEmail())
-        );
+                new UserResponse(user.getName(), user.getEmail()));
     }
 
     public ResponseEntity<UserResponse> deleteUser() {
-
         User user = authorizationService.getAuthenticatedUser();
         userRepository.delete(user);
-
         return ResponseEntity.ok(
-                new UserResponse(user.getName(), user.getEmail())
-        );
+                new UserResponse(user.getName(), user.getEmail()));
     }
 }
