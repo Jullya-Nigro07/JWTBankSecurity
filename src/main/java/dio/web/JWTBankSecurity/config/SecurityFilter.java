@@ -1,5 +1,6 @@
 package dio.web.JWTBankSecurity.config;
 
+import dio.web.JWTBankSecurity.exception.TokenInvalid;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,13 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
-import java.util.Optional;
 
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
-
     private final TokenConfig tokenConfig;
-
     public SecurityFilter(TokenConfig tokenConfig){
         this.tokenConfig = tokenConfig;
     }
@@ -24,23 +22,21 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizedHeader = request.getHeader("Authorization");
+        try{
+            if (Strings.isNotBlank(authorizedHeader) && authorizedHeader.startsWith("Bearer ")) {
+                String token = authorizedHeader.substring("Bearer ".length());
 
-        if (Strings.isNotEmpty(authorizedHeader) && authorizedHeader.startsWith("Bearer ")){
-            String token = authorizedHeader.substring("Bearer ".length());
-            Optional<JWTUserData> User = tokenConfig.validateToken(token);
-
-            if (User.isPresent()){
-
-                JWTUserData userData = User.get();
-
+                JWTUserData user = tokenConfig.validateToken(token);
                 UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userData, null, null);
+                        new UsernamePasswordAuthenticationToken(user, null, null);
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
-            filterChain.doFilter(request, response);
-        }
-        else{
+
+        }catch (TokenInvalid ex) {
+            System.out.println(ex.getMessage());
+
+        }finally {
             filterChain.doFilter(request, response);
         }
     }
