@@ -1,10 +1,8 @@
 package dio.web.JWTBankSecurity.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -26,4 +24,11 @@ public class Account {
 
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
     private List<Transaction> transactions;
+
+    public Account(User user) {
+        this.user = user;
+    }
+
+    public Account() {
+    }
 }

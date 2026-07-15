@@ -1,12 +1,10 @@
 package dio.web.JWTBankSecurity.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.List;
 
@@ -29,6 +27,15 @@ public class User implements UserDetails {
 
     @Column(name = "token_version", nullable = false)
     private Integer tokenVersion = 0;
+
+    public User() {
+    }
+
+    public User(String name, String email, String password){
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
 
     public void incrementTokenVersion() {
         this.tokenVersion++;
