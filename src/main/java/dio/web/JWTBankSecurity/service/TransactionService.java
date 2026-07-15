@@ -12,16 +12,13 @@ import java.util.List;
 public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final AuthorizationService authorizationService;
-
-    public TransactionService(TransactionRepository transactionRepository,
-                              AuthorizationService authorizationService) {
+    public TransactionService(TransactionRepository transactionRepository, AuthorizationService authorizationService) {
         this.transactionRepository = transactionRepository;
         this.authorizationService = authorizationService;
     }
 
     @Transactional
     public List<TransactionResponse> findMyTransactions() {
-
         User user = authorizationService.getAuthenticatedUser();
         Account account = user.getAccount();
 
@@ -31,7 +28,7 @@ public class TransactionService {
                         transaction.getId(),
                         transaction.getType(),
                         transaction.getAmount(),
-                        transaction.getTime()
+                        transaction.getDateTime()
                 ))
                 .toList();
     }
