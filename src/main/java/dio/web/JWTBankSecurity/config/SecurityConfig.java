@@ -18,15 +18,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final SecurityFilter securityFilter;
-
     public SecurityConfig(SecurityFilter securityFilter){
         this.securityFilter = securityFilter;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity http){
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
@@ -41,7 +39,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration){
         return authenticationConfiguration.getAuthenticationManager();
     }
 
