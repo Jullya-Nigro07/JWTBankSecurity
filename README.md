@@ -1,10 +1,12 @@
-# 🪪 JWTBankSecurity
-JWTBankSecurity é uma API REST em Java com Spring Boot que demonstra a implementação de autenticação usando JSON Web Tokens (JWT)
+# Nigro Credit - JWTBankSecurity
 
-![Status](https://img.shields.io/badge/Status-Em%20Andamento-yellow)
+---
+![Status](https://img.shields.io/badge/Status-Concluído-green)
 ![Linguagem](https://img.shields.io/badge/Linguagem-Java%2021-brown)
-![IDE](https://img.shields.io/badge/IDE-IntelliJ%20IDEA-purple)
-![Gerenciador](https://img.shields.io/badge/Gerenciador-Maven-orange)
+![IDE](https://img.shields.io/badge/IDE-IntelliJ%20IDEA-blue)
+![Gerenciador](https://img.shields.io/badge/Gerenciador-Maven-purple)
+![Ferramenta de teste](https://img.shields.io/badge/Ferramenta-Postaman-orange)
+
 
 Este projeto foi desenvolvido para aprender e aplicar conceitos de segurança aplicados a APIs, incluindo:
 
@@ -20,17 +22,17 @@ Este projeto foi desenvolvido para aprender e aplicar conceitos de segurança ap
 
 ### 🧠 Sobre o projeto
 
-JWT (JSON Web Token) é um padrão utilizado para autenticação stateless em aplicações web.
-Este projeto exemplifica como criar e validar tokens JWT em um backend Spring Boot, incluindo um filtro de segurança que intercepta requisições e autentica o usuário com base no token
+API REST desenvolvida em Java com Spring Boot que demonstra a implementação de autenticação e autorização utilizando JSON Web Tokens (JWT). O projeto simula uma aplicação bancária, permitindo o gerenciamento de usuários e operações relacionadas a contas, aplicando conceitos de segurança com Spring Security.
 
 Funcionalidades:
 - Registrar um usuário já com uma conta
 - Logar um usuário e gerar um token para ele
 - Realizar deposito e saque com o registro da transação
 - Acessar extrato
+- Acessar transações feitas na conta do usuário
 
 
-![Diagrama](img/diagramaR.png)
+![Diagrama](img/diagramaClasses.png)
 
 🔑 Geração de Token (JWT)
 
@@ -68,124 +70,198 @@ A classe SecurityConfig que é onde configuramos:
 - Validation | Validação de dados de entrada
 - Lombok | Reduz código repetitivo (boilerplate)
 - JWT :
-
-```pom.xml
-<dependency>
-    <groupId>com.auth0</groupId>
-    <artifactId>java-jwt</artifactId>
-    <version>4.4.0</version>
-</dependency>
-```
-
+    ```pom.xml
+    <dependency>
+        <groupId>com.auth0</groupId>
+        <artifactId>java-jwt</artifactId>
+        <version>4.4.0</version>
+    </dependency>
+    ```
 ---
-
-### ✅Como executar e testar
-
+Como executar e testar✅
+---
 1. **Clone o repositório:**
 
    ```bash
    git clone "https://github.com/Jullya-Nigro07/JWTBankSecurity.git"
     ```
 
-2. **Configure o PostgreSQL**
+Existem duas maniera de rodar esta aplicação:
+-
 
+---
+### 1. Pelo SGBD Postgres (version 18)
 
-- Utilize o PostgreSQL versão 18
-- Crie um banco de dados com o nome de sua preferência:
-
+I. Abra seu PostgreSQL e crie o banco:
    ```sql
    CREATE DATABASE my_users;
    ```
+   
+II. Abra o projeto na IDE (IntelliJ IDEA ou outra IDE compatível com Java 21)
 
-3. **Abra o projeto na IDE**
-
-
-- Abra no IntelliJ IDEA (ou outra IDE compatível com Java 21)
-
-
-4. **Configure o banco de dados**
-
-
-- No arquivo application.properties (ou application.yml), ajuste as credenciais:
-
-
-   ```properties
+III. No arquivo application.properties (ou application.yml), ajuste as credenciais:
+```properties
    spring.datasource.url=jdbc:postgresql://localhost:5432/NOME_DO_BANCO
    spring.datasource.username=postgres
    spring.datasource.password=SUA_SENHA
-   ```
+  ```
+   
+IV. Rode a classe principal "JWTBankSecurityApplication"
+     ```
+    src/main/java/dio.web.JWTBankSecurity/JwtBankSecurityApllication
+    ```
 
-5. **Execute a aplicação**
+V. Teste as rotas no Postman, Insomnia ou via HTTP.Request do Intelliji 
+    ```
+   JWTBankSecurity --> 🌐request.http
+    ```
+---
 
+### 2. Via docker
+I. Abra seu docker
 
-- Rode a classe principal JWTBankSecurityApplication
-- Aguarde o build finalizar
+II. Configure o docker-compose da aplicação com seus dados
 
-6. **Teste as rotas no Postman, Insomnia ou via HTTP.Request do Intelliji**
+```bash
+db:
+  POSTGRES_DB: my_users
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: admadm
 
-JWTBankSecurity --> 🌐request.http
+api:
+  BD_NAME: nome_bd
+  BD_USER: seu_user_bd
+  BD_PASSWORD: sua_senha_bd
+```
+
 
 ---
 
-### 📁 Estrutura do projeto
+## 📌 Endpoints da API
 
-        src/
-        └── main/
-           └── java/
-             └── dio.web.JWTBankSecurity/
-                ├── config/ 
-                │     ├── AuthConfig.java
-                │     ├── JWTUserData.java
-                │     ├── SecurityConfig.java
-                │     ├── SecurityFilter.java
-                │     └── TokenConfig.java
-                │
-                ├── controller/
-                │     ├── TransactionController.java
-                │     ├── AccountController.java 
-                │     └── UserController.java
-                │
-                ├── dto/
-                │      ├── erro/
-                │           ├── ErroRequest.java
-                │           └── UnauthorizedException.java
-                │      ├── request/
-                │           ├── UpdateUserRequest.java
-                │           ├── AccountRequest.java
-                │           ├── LoginRequest.java
-                │           └── RegisterUserRequest.java
-                │      └── response/
-                │           ├── AccountResponse.java
-                │           ├── TransactionResponse.java
-                │           ├── LoginResponse.java
-                │           └── RegisterUserRequest.java
-                │
-                ├── entity/
-                │      ├── Account.java
-                │      ├── Transaction.java 
-                │      └── User.java
-                │
-                ├── repositoty/
-                │      ├── AccountRepository.java
-                │      ├── TransactionRepository.java 
-                │      └── UserRepository.java
-                │            
-                ├── exception/
-                │      ├── GlobalExceptionHandler.java
-                │      └── UnauthorizedException.java
-                │
-                ├── service/
-                │      ├── AccountService.java
-                │      ├── AuthorizationService.java
-                │      ├── TransactionService.java
-                │      └── UserService.java
-                │
-                └── JWTBankSecurityApplication.java
-           └── resources/
-                ├── db.migracion/     
-                       └── V1__create_table_user.sql
+> **Base URL**
+>
+> ```
+> http://localhost:8080
+> ```
+
 ---
 
+Usuário ⤵️
+--
+
+***Criar usuário***  -> POST `/user/register`
+
+*Body (JSON)*
+
+```json
+{
+  "name": "Nome do User",
+  "email": "email@gmail.com",
+  "password": "senha123"
+}
+```
+
+---
+
+***Login*** -> POST `/user/login`
+
+*Body (JSON)*
+
+```json
+{
+  "email": "email@gmail.com",
+  "password": "senha123"
+}
+```
+
+> ⚠️ Salve o **Bearer Token** retornado no login. Ele será necessário para acessar os endpoints protegidos.
+
+---
+
+***Atualizar usuário*** -> PATCH `/user/updateRegister`
+
+🔒 *Autenticação:* Bearer Token
+
+*Body (JSON)*
+
+```json
+{
+  "email": "emailNovo@gmail.com",
+  "password": "senhaNova123"
+}
+```
+> ⚠️ Envie no Body(JSON) apenas os campos que deseja atualizar.
+
+---
+
+***Excluir usuário*** -> DELETE `/user/deleteRegister`
+
+🔒 *Autenticação:* Bearer Token
+
+Sem corpo na requisição.
+
+---
+
+Conta ⤵️
+--
+
+***Consultar saldo*** -> GET `/account/extract`
+
+🔒 *Autenticação:* Bearer Token
+
+---
+
+***Depositar*** -> POST `/account/deposit`
+
+🔒 *Autenticação:* Bearer Token
+
+*Body (JSON)*
+
+```json
+{
+  "amount": 100.00
+}
+```
+
+---
+
+***Sacar*** -> POST `/account/withdraw`
+
+🔒 *Autenticação:* Bearer Token
+
+*Body (JSON)*
+
+```json
+{
+  "amount": 100.00
+}
+```
+
+---
+Transações ⤵️
+--
+
+***Listar transações*** -> GET `/transaction`
+
+🔒 *Autenticação:* Bearer Token
+
+---
+
+Autenticação ⤵️
+--
+
+Todos os endpoints protegidos utilizam **Bearer Token**.
+
+*No Postman:*
+
+```
+Authorization
+├── Type: Bearer Token
+└── Token: <token obtido no login>
+```
+
+---
 
 ### 📉 Diagrama de sequencia (UML) - Login
 
