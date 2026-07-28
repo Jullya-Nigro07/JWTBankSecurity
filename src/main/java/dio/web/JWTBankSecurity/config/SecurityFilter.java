@@ -1,6 +1,6 @@
 package dio.web.JWTBankSecurity.config;
 
-import dio.web.JWTBankSecurity.exception.TokenInvalid;
+import dio.web.JWTBankSecurity.exception.TokenInvalidException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,13 +15,17 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
     private final TokenConfig tokenConfig;
-    public SecurityFilter(TokenConfig tokenConfig){
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    public SecurityFilter(TokenConfig tokenConfig, CustomAuthenticationEntryPoint customAuthenticationEntryPoint){
         this.tokenConfig = tokenConfig;
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorizedHeader = request.getHeader("Authorization");
+
         try{
             if (Strings.isNotBlank(authorizedHeader) && authorizedHeader.startsWith("Bearer ")) {
                 String token = authorizedHeader.substring("Bearer ".length());
@@ -32,12 +36,10 @@ public class SecurityFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
-
-        }catch (TokenInvalid ex) {
-            System.out.println(ex.getMessage());
-
-        }finally {
             filterChain.doFilter(request, response);
+
+        }catch (TokenInvalidException ex){
+            customAuthenticationEntryPoint.commence(request, response, ex);
         }
     }
 }

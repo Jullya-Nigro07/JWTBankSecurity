@@ -5,8 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import dio.web.JWTBankSecurity.entity.User;
-import dio.web.JWTBankSecurity.exception.TokenInvalid;
-import dio.web.JWTBankSecurity.exception.UnauthorizedException;
+import dio.web.JWTBankSecurity.exception.TokenInvalidException;
 import dio.web.JWTBankSecurity.repository.UserRepository;
 import org.springframework.stereotype.Component;
 import java.time.Instant;
@@ -31,7 +30,7 @@ public class TokenConfig {
                 .sign(algorithm);
     }
 
-    public JWTUserData validateToken(String token) {
+    public JWTUserData validateToken(String token) throws TokenInvalidException {
         try {
             DecodedJWT decode =
                     JWT.require(algorithm).build().verify(token);
@@ -40,10 +39,10 @@ public class TokenConfig {
             Integer tokenVersionToken =
                     decode.getClaim("tokenVersion").asInt();
 
-            User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UnauthorizedException("User not found"));
+            User user = userRepository.findUserByEmail(email).orElseThrow(() -> new TokenInvalidException("| ERROR: Token user not found! |"));
 
             if (!tokenVersionToken.equals(user.getTokenVersion())) {
-                throw new TokenInvalid("Token revoked");
+                throw new TokenInvalidException("| ERROR: Token revoked |");
             }
 
             return JWTUserData.builder()
@@ -52,7 +51,7 @@ public class TokenConfig {
                             .build();
 
         } catch (JWTVerificationException ex) {
-            throw new TokenInvalid("Error validating the token!");
+            throw new TokenInvalidException("| ERROR validating the token! Invalid token |");
         }
     }
 }
