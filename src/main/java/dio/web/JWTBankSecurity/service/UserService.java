@@ -8,6 +8,7 @@ import dio.web.JWTBankSecurity.dto.response.LoginResponse;
 import dio.web.JWTBankSecurity.dto.response.UserResponse;
 import dio.web.JWTBankSecurity.entity.Account;
 import dio.web.JWTBankSecurity.entity.User;
+import dio.web.JWTBankSecurity.exception.ConflitInfoException;
 import dio.web.JWTBankSecurity.exception.UnauthorizedException;
 import dio.web.JWTBankSecurity.repository.AccountRepository;
 import dio.web.JWTBankSecurity.repository.UserRepository;
@@ -68,7 +69,7 @@ public class UserService {
 
     public ResponseEntity<UserResponse> register(RegisterUserRequest request) {
         if (userRepository.findUserByEmail(request.email()).isPresent()) {
-            throw new UnauthorizedException("Email already registered. Please use a different email address!");
+            throw new ConflitInfoException("Email already registered. Please use a different email address!");
         }
 
         String name = request.name();
