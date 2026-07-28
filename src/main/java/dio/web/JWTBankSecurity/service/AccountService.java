@@ -6,7 +6,7 @@ import dio.web.JWTBankSecurity.entity.Account;
 import dio.web.JWTBankSecurity.entity.Transaction;
 import dio.web.JWTBankSecurity.entity.User;
 import dio.web.JWTBankSecurity.enums.TipoTransaction;
-import dio.web.JWTBankSecurity.exception.UnauthorizedException;
+import dio.web.JWTBankSecurity.exception.ValueInvalidException;
 import dio.web.JWTBankSecurity.repository.AccountRepository;
 import dio.web.JWTBankSecurity.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
@@ -51,7 +51,7 @@ public class AccountService {
 
         //Primeiro menor que o segundo
         if (account.getBalance().compareTo(amount) < 0) {
-            throw new UnauthorizedException("Your balance is insufficient. Check your balance");
+            throw new ValueInvalidException("Your balance is insufficient. Check your balance");
         }
 
         Transaction transaction = new Transaction(TipoTransaction.WITHDRAW, amount, account);
