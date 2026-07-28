@@ -19,11 +19,11 @@ public class AuthorizationService {
     public User getAuthenticatedUser() {
         Authentication userAuthentication = SecurityContextHolder.getContext().getAuthentication();
         if (userAuthentication == null || !userAuthentication.isAuthenticated()) {
-            throw new UnauthorizedException("ERRO: Unauthenticated user");
+            throw new UnauthorizedException("| ERROR: Unauthenticated user |");
         }
         JWTUserData userResponse = (JWTUserData) userAuthentication.getPrincipal();
         String emailUser = userResponse.email();
 
-        return userRepository.findUserByEmail(emailUser).orElseThrow(() -> new UserNotFound("ERRO: User not found!"));
+        return userRepository.findUserByEmail(emailUser).orElseThrow(() -> new UserNotFound("| ERROR: User not found! |"));
     }
 }
