@@ -112,8 +112,6 @@ class UserServiceTest {
         UpdateUserRequest userRequest2 = new UpdateUserRequest("Teste02", "teste02@teste.com", "7654321");
         ResponseEntity<UserResponse> response = userService.updateUser(userRequest2);
 
-        User userUpdate = userRepository.findUserByEmail(userRequest.email()).orElseThrow();
-
         assertAll(
                 () -> assertEquals(HttpStatus.OK, response.getStatusCode()),
                 () -> assertEquals("Teste02", user.getName()),
