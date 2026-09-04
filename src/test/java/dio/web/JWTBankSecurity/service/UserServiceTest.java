@@ -65,6 +65,32 @@ class UserServiceTest {
     }
 
     @Test
+    void shouldSaveUser() {
+        RegisterUserRequest userRequest = new RegisterUserRequest("Teste", "testemailsave@teste.com", "1234567");
+        ResponseEntity<UserResponse> response = userService.register(userRequest);
+        User user = userRepository.findUserByEmail(response.getBody().email()).orElseThrow();
+
+        assertAll(
+                () -> assertNotNull(user),
+                () -> assertEquals(HttpStatus.CREATED, response.getStatusCode())
+        );
+    }
+
+    @Test
+    void shouldHasePassword(){
+        String password = "1234567";
+        RegisterUserRequest userRequest = new RegisterUserRequest("Teste", "testemailpass@teste.com", password);
+        userService.register(userRequest);
+
+        User user = userRepository.findUserByEmail(userRequest.email()).orElseThrow();
+
+        assertAll(
+                () -> assertNotEquals(password, user.getPassword()),
+                () -> assertTrue(passwordEncoder.matches(password, user.getPassword()))
+        );
+    }
+
+    @Test
     void shouldRejectDuplicateEmail() {
         RegisterUserRequest user = new RegisterUserRequest("Teste", "testemail@teste.com", "1234567");
         RegisterUserRequest user2 = new RegisterUserRequest("Teste", "testemail@teste.com", "1234567");
@@ -73,18 +99,6 @@ class UserServiceTest {
         assertThrows(ConflitInfoException.class, () -> {
             userService.register(user2);
         });
-    }
-
-    @Test
-    void shouldSaveUser() {
-        RegisterUserRequest userRequest = new RegisterUserRequest("Teste", "testemail@teste.com", "1234567");
-        ResponseEntity<UserResponse> response = userService.register(userRequest);
-        User user = userRepository.findUserByEmail(response.getBody().email()).orElseThrow();
-
-        assertAll(
-                () -> assertNotNull(user),
-                () -> assertEquals(HttpStatus.OK, response.getStatusCode())
-        );
     }
 
     @Test
