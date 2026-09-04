@@ -18,6 +18,8 @@ Este projeto foi desenvolvido para aprender e aplicar conceitos de segurança ap
 
 ✔ Integração com Spring Security
 
+✔ Testes
+
 ---
 
 ### 🧠 Sobre o projeto
@@ -69,14 +71,11 @@ A classe SecurityConfig que é onde configuramos:
 - Spring Flyway | Controle de versão do banco de dados
 - Validation | Validação de dados de entrada
 - Lombok | Reduz código repetitivo (boilerplate)
-- JWT :
-    ```pom.xml
-    <dependency>
-        <groupId>com.auth0</groupId>
-        <artifactId>java-jwt</artifactId>
-        <version>4.4.0</version>
-    </dependency>
-    ```
+- H2 Database | Para testes
+- JUnit
+- JWT
+- Mockito
+  
 ---
 Como executar e testar✅
 ---
